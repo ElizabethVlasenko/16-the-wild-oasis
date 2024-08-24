@@ -14,6 +14,21 @@ const Main = styled.main`
   background-color: var(--color-grey-50);
   padding: 4rem 4.8rem 6.4rem;
   overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 9px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-indigo-100);
+    border-radius: var(--border-radius-lg);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-indigo-700);
+    border-radius: var(--border-radius-lg);
+    width: 1px;
+  }
 `;
 
 const Container = styled.div`

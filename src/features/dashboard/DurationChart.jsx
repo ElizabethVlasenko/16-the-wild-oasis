@@ -19,6 +19,13 @@ const ChartBox = styled.div`
   padding: 2.4rem 3.2rem;
   grid-column: 3 / span 2;
 
+  grid-column: 1 / -1;
+  padding-top: 2.4rem;
+
+  @media (min-width: 1470px) {
+    grid-column: 3 / span 2;
+  }
+
   & > *:first-child {
     margin-bottom: 1.6rem;
   }
@@ -158,7 +165,7 @@ function DurationChart({ confirmedStays }) {
             dataKey="value"
             innerRadius={85}
             outerRadius={110}
-            cx="40%"
+            cx="45%"
             cy="50%"
             paddingAngle={3}
           >
