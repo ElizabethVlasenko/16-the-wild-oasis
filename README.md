@@ -12,15 +12,15 @@
   <li>- [x] The booking status can be “unconfirmed” (booked but not yet checked in), “checked in”, or “checked out”. The table should be filterable 
 by this important status</li>
   <li>- [x] Other booking data includes: number of guests, number of nights, guest observations, whether they booked breakfast, breakfast price</li>
-  <li>- [x] Users should be able to delete, check in, or check out a booking as the guest arrives (no editing necessary for now)</li>
-  <li>- [x] Bookings may not have been paid yet on guest arrival. Therefore, on check in, users need to accept payment (outside the app), and 
+  <li>- [x] Users should be able to delete, check-in, or check out a booking as the guest arrives (no editing necessary for now)</li>
+  <li>- [x] Bookings may not have been paid yet on guest arrival. Therefore, on check-in, users need to accept payment (outside the app), and 
 then confirm that payment has been received (inside the app)</li>
-  <li>- [x] On check in, the guest should have the ability to add breakfast for the entire stay, if they hadn’t already</li>
+  <li>- [x] On check-in, the guest should have the ability to add breakfast for the entire stay, if they hadn’t already</li>
   <li>- [x] Guest data should contain: full name, email, national ID, nationality, and a country flag for easy identification</li>
   <li>- [x] The initial app screen should be a dashboard, to display important information for the last 7, 30, or 90 days:
     <ul>  
       <li>- [x] A list of guests checking in and out on the current day. Users should be able to perform these tasks from here</li>
-      <li>- [x] Statistics on recent bookings, sales, check ins, and occupancy rate</li>
+      <li>- [x] Statistics on recent bookings, sales, check-ins, and occupancy rate</li>
       <li>- [x] A chart showing all daily hotel sales, showing both “total” sales and “extras” sales (only breakfast at the moment)</li>
       <li>- [x] A chart showing statistics on stay durations, as this is an important metric for the hotel</li>
     </ul>
@@ -32,13 +32,18 @@ then confirm that payment has been received (inside the app)</li>
 <h3>Additional goals outside of the course</h3>
 <ul>
   <li>- [ ] Users should be able to create new bookings</li>
+  <li>- [ ] Users should be able to edit bookings</li>
+  <li>- [ ] Users should be able to set check-in and check-out times for bookings</li>
+  <li>- [ ] Users should be able to get a pdf invoice on check out</li>
+  <li>- [ ] Guest should be able to receive a pdf invoice by email</li>
+  <li>- [ ] Users should be able to change cabin price based on the day of week, month or custom price for any day</li>
 </ul>
 
 <h2>Running this project</h2>
-<p>To run this project you need to download the repository and open in Visual Studio Code or similar app. Then you have to open terminal and run the command <code>npm run dev</code>. By default it won't open any new tab, so you have to go to <a href="http://localhost:5173/" target="_blank">http://localhost:5173/</a>.</p>
+<p>To run this project you need to download the repository and open it in Visual Studio Code or a similar app. Then you have to open a terminal and run the command <code>npm run dev</code>. By default, it won't open any new tab, so you have to go to <a href="http://localhost:5173/" target="_blank">http://localhost:5173/</a>.</p>
 
 <h2>Working with the app</h2>
-<p>The app require you to be logged in to being able to use any features. When you open the login page the default form values gives you access to the default admin account. From here you can register a new user or use it as an admin.</p>
+<p>The app requires you to be logged in to be able to use any features. When you open the login page enter email <code>preview@example.com</code> and password <code>12345678</code>. From here you can register a new user or use it as an admin.</p>
 
 <h2>Technologies used</h2>
 <ul>
