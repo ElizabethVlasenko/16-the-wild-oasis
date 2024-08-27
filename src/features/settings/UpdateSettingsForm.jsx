@@ -13,6 +13,8 @@ function UpdateSettingsForm() {
       maxBookingLength,
       maxGuestsPerBooking,
       breakfastPrice,
+      minCheckInTime,
+      maxCheckOutTime,
     } = {},
     error,
   } = useSettings();
@@ -65,6 +67,26 @@ function UpdateSettingsForm() {
           id="breakfast-price"
           defaultValue={breakfastPrice}
           onBlur={(e) => handleUpdate(e, "breakfastPrice")}
+        />
+      </FormRow>
+
+      <FormRow label="Check in time">
+        <Input
+          disabled={isUpdating}
+          type="time"
+          id="minCheckInTime"
+          defaultValue={minCheckInTime}
+          onBlur={(e) => handleUpdate(e, "minCheckInTime")}
+        />
+      </FormRow>
+
+      <FormRow label="Check out time">
+        <Input
+          disabled={isUpdating}
+          type="time"
+          id="maxCheckOutTime"
+          defaultValue={maxCheckOutTime}
+          onBlur={(e) => handleUpdate(e, "maxCheckOutTime")}
         />
       </FormRow>
     </Form>
