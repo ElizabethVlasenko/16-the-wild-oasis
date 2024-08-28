@@ -58,8 +58,29 @@ const NoActivity = styled.p`
   margin-top: 0.8rem;
 `;
 
+function sortFunction(a, b, field) {
+  if (a[field] < b[field]) {
+    return -1;
+  } else if (a[field] > b[field]) {
+    return 1;
+  }
+  // a must be equal to b
+  return 0;
+}
+
 function TodayActivity() {
   const { activities, isLoading } = useTodayActivity();
+
+  const checkInActivities = activities
+    ?.filter((activity) => activity.status === "unconfirmed")
+    .sort((a, b) => sortFunction(a, b, "checkInTime"));
+  const checkOutActivities = activities
+    ?.filter((activity) => activity.status === "checked-in")
+    .sort((a, b) => sortFunction(a, b, "checkOutTime"));
+
+  const sortedActivities = checkOutActivities?.concat(checkInActivities);
+
+  console.log(sortedActivities);
 
   return (
     <StyledToday>
@@ -68,9 +89,9 @@ function TodayActivity() {
       </Row>
 
       {!isLoading ? (
-        activities.length > 0 ? (
+        sortedActivities.length > 0 ? (
           <TodayList>
-            {activities.map((activity) => (
+            {sortedActivities.map((activity) => (
               <TodayItem key={activity.id} activity={activity} />
             ))}
           </TodayList>
