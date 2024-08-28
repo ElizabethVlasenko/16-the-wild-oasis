@@ -18,6 +18,7 @@ import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useDeleteBooking } from "./useDeleteBooking";
 import Empty from "../../ui/Empty";
+import { useSettings } from "../settings/useSettings";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -29,12 +30,13 @@ function BookingDetail() {
   const { isLoading, booking } = useBooking();
   const { checkout, isCheckingOut } = useCheckout();
   const { isDeleting, deleteBooking } = useDeleteBooking();
+  const { isLoading: isLoadingSettings, settings } = useSettings();
 
   const navigate = useNavigate();
 
   const moveBack = useMoveBack();
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || isLoadingSettings) return <Spinner />;
   if (!booking) return <Empty resource="booking" />;
 
   const { status, id: bookingId } = booking;
@@ -55,7 +57,7 @@ function BookingDetail() {
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
       </Row>
 
-      <BookingDataBox booking={booking} />
+      <BookingDataBox booking={booking} settings={settings} />
 
       <ButtonGroup>
         {status === "unconfirmed" && (
