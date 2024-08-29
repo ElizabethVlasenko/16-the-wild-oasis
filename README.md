@@ -33,7 +33,7 @@ then confirm that payment has been received (inside the app)</li>
 <ul>
   <li>- [ ] Users should be able to create new bookings</li>
   <li>- [ ] Users should be able to edit bookings</li>
-  <li>- [ ] Users should be able to set check-in and check-out times for bookings</li>
+  <li>- [x] Users should be able to set check-in and check-out times for bookings</li>
   <li>- [ ] Users should be able to get a pdf invoice on check out</li>
   <li>- [ ] Guest should be able to receive a pdf invoice by email</li>
   <li>- [ ] Users should be able to change cabin price based on the day of week, month or custom price for any day</li>
