@@ -37,6 +37,9 @@ then confirm that payment has been received (inside the app)</li>
   <li>- [ ] Users should be able to get a pdf invoice on check out</li>
   <li>- [ ] Guest should be able to receive a pdf invoice by email</li>
   <li>- [ ] Users should be able to change cabin price based on the day of week, month or custom price for any day</li>
+  <li>- [ ] App should have a guest table, displaying their information</li>
+  <li>- [ ] Users should be able to create new guests</li>
+  <li>- [ ] Users should be able to edit guests</li>
 </ul>
 
 <h2>Running this project</h2>
