@@ -6,7 +6,7 @@ export async function getBookings({ filter, sortBy, page }) {
   let query = supabase
     .from("bookings")
     .select(
-      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, checkInTime, checkOutTime, status, cabins(name), guests(fullName, email)",
+      "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, checkInTime, checkOutTime, status, cabins(name, id), guests(fullName, email)",
       { count: "exact" }
     );
 
@@ -125,6 +125,19 @@ export async function updateBooking(id, obj) {
 export async function deleteBooking(id) {
   // REMEMBER RLS POLICIES
   const { data, error } = await supabase.from("bookings").delete().eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be deleted");
+  }
+  return data;
+}
+
+export async function createBooking(newBooking) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert([newBooking])
+    .select();
 
   if (error) {
     console.error(error);

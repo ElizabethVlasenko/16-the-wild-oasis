@@ -80,8 +80,6 @@ function TodayActivity() {
 
   const sortedActivities = checkOutActivities?.concat(checkInActivities);
 
-  console.log(sortedActivities);
-
   return (
     <StyledToday>
       <Row type="horizontal">

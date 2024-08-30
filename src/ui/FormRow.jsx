@@ -20,10 +20,15 @@ const StyledFormRow = styled.div`
     border-bottom: 1px solid var(--color-grey-100);
   }
 
-  &:has(button) {
+  &:has(button):not(:has(.rdp-root)) {
     display: flex;
     justify-content: flex-end;
     gap: 1.2rem;
+  }
+
+  &:has(.rdp-root) {
+    display: flex;
+    justify-content: space-between;
   }
 `;
 

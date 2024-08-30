@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import "react-day-picker/style.css";
 
 const GlobalStyles = createGlobalStyle`
 :root {
@@ -181,6 +182,13 @@ img {
   /* For dark mode */
   filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
 }
+
+//date picker styles
+.rdp-root {
+  --rdp-range_middle-background-color:var(--color-grey-300);
+  --rdp-day-height: 2.5rem;
+  --rdp-day-width: 2.5rem;
+} 
 
 /*
 FOR DARK MODE
