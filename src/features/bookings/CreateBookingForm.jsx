@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { useState } from "react";
 import styled from "styled-components";
-import { compareAsc, differenceInCalendarDays } from "date-fns";
+import { addDays, compareAsc, differenceInCalendarDays } from "date-fns";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -62,10 +62,13 @@ function CreateBookingForm() {
   const selectedCabinBookings = bookings.filter(
     (booking) => booking.cabins.id === +selectedCabin
   );
+
   const disabledDates = selectedCabinBookings?.map((booking) => ({
-    after: booking.startDate,
-    before: booking.endDate,
+    after: addDays(booking.startDate, 1),
+    before: addDays(booking.endDate, 1),
   }));
+
+  console.log("disabled dates", disabledDates);
 
   function onSubmit(data) {
     const {
@@ -79,6 +82,7 @@ function CreateBookingForm() {
     } = data;
 
     console.log(selectedBookingDates);
+
     if (!selectedBookingDates) return;
     console.log("received data", data);
     console.log("selected cabin", selectedCabin);
@@ -97,12 +101,14 @@ function CreateBookingForm() {
       ? settings.breakfastPrice * +numGuests * numNights
       : 0;
 
+    const totalPrice = cabinPrice * numNights;
+
     const newBooking = {
       startDate: selectedBookingDates.from,
       endDate: selectedBookingDates.to,
       numNights,
       numGuests: Number(numGuests),
-      totalPrice: cabinPrice * numNights,
+      totalPrice,
       status: "unconfirmed",
       hasBreakfast,
       isPaid: false,
@@ -280,6 +286,7 @@ function CreateBookingForm() {
         />
       </FormRow>
       <FormRow>
+        <p>Total price: </p>
         <Button disabled={isCreating}>Create booking</Button>
       </FormRow>
     </Form>
