@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { addDays, compareAsc, differenceInCalendarDays } from "date-fns";
 
@@ -42,11 +42,28 @@ function CreateBookingForm() {
   const { isLoading: isLoadingGuests, guests } = useGuests();
   const { errors } = formState;
   const [sortString, setSortString] = useState("");
-  const [selectedCabin, setSelectedCabin] = useState();
+  const [selectedCabin, setSelectedCabin] = useState("select");
   const [selectedBookingDates, setSelectedBookingDates] = useState();
+  const [inputNumGests, setInputNumGests] = useState(1);
+  const [hasBreakfast, setHasBreakfast] = useState(false);
 
   const { createBooking, isCreating } = useCreateBooking();
 
+  const numNights =
+    selectedBookingDates &&
+    differenceInCalendarDays(
+      selectedBookingDates.to,
+      selectedBookingDates.from
+    );
+
+  const extrasPrice = hasBreakfast
+    ? settings.breakfastPrice * +getValues().numGuests * numNights
+    : 0;
+
+  const totalPrice =
+    selectedCabin !== "select"
+      ? JSON.parse(selectedCabin).regularPrice * numNights + extrasPrice
+      : null;
   if (
     isLoadingCabins ||
     isLoadingSettings ||
@@ -59,21 +76,22 @@ function CreateBookingForm() {
     guest.email.includes(sortString)
   );
 
-  const selectedCabinBookings = bookings.filter(
-    (booking) => booking.cabins.id === +selectedCabin
-  );
+  const selectedCabinBookings =
+    selectedCabin !== "select"
+      ? bookings.filter(
+          (booking) => booking.cabins.id === JSON.parse(selectedCabin).id
+        )
+      : [];
 
   const disabledDates = selectedCabinBookings?.map((booking) => ({
     after: addDays(booking.startDate, 1),
     before: addDays(booking.endDate, 1),
   }));
 
-  console.log("disabled dates", disabledDates);
-
   function onSubmit(data) {
     const {
       hasBreakfast,
-      cabinID,
+      cabinInfo,
       observations,
       guestID,
       checkInTime,
@@ -81,27 +99,23 @@ function CreateBookingForm() {
       numGuests,
     } = data;
 
-    console.log(selectedBookingDates);
+    const { id: cabinID, regularPrice } = JSON.parse(cabinInfo);
 
-    if (!selectedBookingDates) return;
+    if (!selectedBookingDates || selectedCabin == "select") return;
     console.log("received data", data);
     console.log("selected cabin", selectedCabin);
-    console.log("cabins", cabins);
+    console.log("cabinInfo", cabinID, regularPrice);
 
-    const cabinPrice = cabins.find(
-      (cabin) => cabin.id === +cabinID
-    ).regularPrice;
+    // const numNights = differenceInCalendarDays(
+    //   selectedBookingDates.to,
+    //   selectedBookingDates.from
+    // );
 
-    const numNights = differenceInCalendarDays(
-      selectedBookingDates.to,
-      selectedBookingDates.from
-    );
+    // const extrasPrice = hasBreakfast
+    //   ? settings.breakfastPrice * +numGuests * numNights
+    //   : 0;
 
-    const extrasPrice = hasBreakfast
-      ? settings.breakfastPrice * +numGuests * numNights
-      : 0;
-
-    const totalPrice = cabinPrice * numNights;
+    // const totalPrice = regularPrice * numNights;
 
     const newBooking = {
       startDate: selectedBookingDates.from,
@@ -115,7 +129,7 @@ function CreateBookingForm() {
       observations,
       cabinID: Number(cabinID),
       guestID: Number(guestID),
-      cabinPrice,
+      cabinPrice: regularPrice,
       extrasPrice,
       checkInTime,
       checkOutTime,
@@ -123,6 +137,7 @@ function CreateBookingForm() {
 
     console.log("new booking obj", newBooking);
     createBooking(newBooking);
+    reset();
     // createCabin({ ...data, image: image }, { onSuccess: (data) => reset() });
   }
 
@@ -132,7 +147,7 @@ function CreateBookingForm() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
-      <FormRow label="Search guest by email" error={errors?.name?.message}>
+      <FormRow label="Search guest by email">
         <Input
           type="text"
           id="search-email"
@@ -140,9 +155,10 @@ function CreateBookingForm() {
           onChange={(e) => setSortString(e.target.value)}
         />
       </FormRow>
+
       <FormRow
         label="Select the guest from the list"
-        error={errors?.name?.message}
+        error={errors?.guestID?.message}
       >
         {sortedGuests?.length > 0 ? (
           <Select
@@ -166,7 +182,9 @@ function CreateBookingForm() {
         <Input
           type="text"
           id="numGuests"
+          value={inputNumGests}
           {...register("numGuests", {
+            onChange: (e) => setInputNumGests(e.target.value),
             required: "This field is required",
             min: {
               value: 1,
@@ -182,23 +200,37 @@ function CreateBookingForm() {
 
       <FormRow
         label="Select the cabin from the list"
-        error={errors?.cabinID?.message}
+        error={errors?.cabinInfo?.message}
       >
         {cabins?.length > 0 ? (
           <Select
             value={selectedCabin}
-            name="cabinID"
-            id="cabinID"
-            {...register("cabinID", {
+            name="cabinInfo"
+            id="cabinInfo"
+            {...register("cabinInfo", {
               required: "This field is required",
               onChange: (e) => setSelectedCabin(e.target.value),
+              validate: (value) => {
+                if (selectedCabin === "select") return "This field is required";
+                if (JSON.parse(value).maxCapacity < inputNumGests)
+                  return `This cabin can't fit more than ${
+                    JSON.parse(value).maxCapacity
+                  } guests`;
+              },
             })}
           >
+            <option disabled value="select">
+              -- select an option --
+            </option>
             {cabins.map((cabin) => (
               <option
-                value={cabin.id}
+                value={JSON.stringify({
+                  id: cabin.id,
+                  regularPrice: cabin.regularPrice,
+                  maxCapacity: cabin.maxCapacity,
+                })}
                 key={cabin.id}
-                disabled={getValues()?.numGuests > cabin.maxCapacity}
+                disabled={inputNumGests > cabin.maxCapacity}
               >
                 {`Cabin ${cabin.name} for ${
                   cabin.maxCapacity
@@ -207,11 +239,11 @@ function CreateBookingForm() {
             ))}
           </Select>
         ) : (
-          <p>Unable to find any cabin</p>
+          <p>Unable to find any cabins</p>
         )}
       </FormRow>
 
-      <FormRow label="Select booking days" error={errors?.name?.message}>
+      <FormRow label="Select booking days">
         <DayPicker
           mode="range"
           id="date"
@@ -274,8 +306,16 @@ function CreateBookingForm() {
         />
       </FormRow>
 
-      <FormRow label="Include breakfast" error={errors?.checkOutTime?.message}>
-        <input type="checkbox" {...register("hasBreakfast")} />
+      <FormRow label="Include breakfast">
+        <input
+          type="checkbox"
+          {...register("hasBreakfast", {
+            onChange: (e) => {
+              setHasBreakfast((breakfast) => (breakfast = !breakfast));
+            },
+          })}
+          value={hasBreakfast}
+        />
       </FormRow>
 
       <FormRow label="Observations">
@@ -286,7 +326,19 @@ function CreateBookingForm() {
         />
       </FormRow>
       <FormRow>
-        <p>Total price: </p>
+        <p>
+          {totalPrice
+            ? `Total price: ${formatCurrency(totalPrice)} ${
+                hasBreakfast
+                  ? `including ${formatCurrency(
+                      extrasPrice
+                    )} for breakfast for ${numNights} days for ${inputNumGests} guest${
+                      inputNumGests > 1 ? "s" : ""
+                    }`
+                  : ""
+              } `
+            : "Continue entering details about the booking..."}
+        </p>
         <Button disabled={isCreating}>Create booking</Button>
       </FormRow>
     </Form>
